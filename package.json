@@ -22,6 +22,6 @@
   },
   "homepage": "https://github.com/chelizichen/Tarsus-Loader#readme",
   "dependencies": {
-    "tarsus-cli": "1.1.1"
+    "tarsus-cli": "1.1.2"
   }
 }
