@@ -23,9 +23,9 @@ function compileInterFace(interfaceCode){
 }
 
 /**
- * @template
- * import httpRequest from <AxiosPath> 
- * 
+ * @template ->
+ * import httpRequest from <AxiosPath>
+ *  
  * export function <methoName>(data){
  *  return httpRequest({
  *      url:<interFace><mehodName>,
@@ -36,18 +36,19 @@ function compileInterFace(interfaceCode){
  * 
  */
 function compileToAxiosRequest(interFaceArr,options){
-    const interFaceName = options.interFaceName;
+    const interFaceName = options.interFaceName.trim();
     const httpModule = options.httpModule;
     const HEAD = `
     import HTTPRequest from '${httpModule}';
     `
-    const BODY = ``
+    let BODY = ``
     for (let index = 0; index < interFaceArr.length; index++) {
         const element = interFaceArr[index];
+        const methodName = element.methodName.trim();
         BODY += `
         export function ${methodName}(data){
             return HTTPRequest({
-                url:${interFaceName}/${element.methodName},
+                url:"${interFaceName}/${methodName}",
                 method:"post",
                 data
             })
@@ -66,14 +67,22 @@ function TarsusLoaderFunc(structCode) {
     
     const httpModule = options.http;
 
+    if(!httpModule){
+        throw new Error(`
+        options.http should be declared \n
+        such as '@/utils/request' \n
+        `)
+    }
+
     const tarsusStream = new TarsusStream(structCode, { isLoader: true });
     const data = Object.fromEntries(TarsusStream.struct_map)
     const toJson = JSON.stringify(data)
     const interFaceArr = compileInterFace(tarsusStream._interFace)
     const interFaceName = tarsusStream._interFace_name;
-
     const getInterFaceExport = compileToAxiosRequest(interFaceArr,{httpModule,interFaceName});
     
+    console.log(getInterFaceExport);
+
     let keys = Object.keys(data)
     let values = Object.values(data)
     let compileToVars = ``
