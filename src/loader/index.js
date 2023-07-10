@@ -81,7 +81,6 @@ function TarsusLoaderFunc(structCode) {
     const interFaceName = tarsusStream._interFace_name;
     const getInterFaceExport = compileToAxiosRequest(interFaceArr,{httpModule,interFaceName});
     
-    console.log(getInterFaceExport);
 
     let keys = Object.keys(data)
     let values = Object.values(data)
